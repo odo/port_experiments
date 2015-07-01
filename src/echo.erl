@@ -47,7 +47,7 @@ benchmark(PayloadLength, Samples, Parallel) ->
             ok
         end,
     lists:seq(1, Samples), 1000000),
-    {{Samples, PayloadLength, Parallel}, Samples/Elapsed}.
+    {{Samples, PayloadLength, Parallel}, Samples/Elapsed, PayloadLength * Samples / Elapsed}.
 
 start_pool(Size) ->
     application:load(echo),
