@@ -1,0 +1,13 @@
+{application, echo,
+ [
+  {description, ""},
+  {vsn, "0.1.0"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib,
+                  sasl
+                 ]},
+  {mod, { echo_app, []}},
+  {env, [{extprog, "echo.py"}, {timeout, 3000}, {maxline, 100}]}
+ ]}.
