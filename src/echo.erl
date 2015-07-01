@@ -34,8 +34,8 @@
 
 benchmark(PoolSize, PayloadLength, Samples, Parallel) ->
   start_pool(PoolSize),
-  {{Samples, PayloadLength, Parallel}, Ops} = benchmark(PayloadLength, Samples, Parallel),
-  {{PoolSize, PayloadLength, Samples, Parallel}, Ops}.
+  {{Samples, PayloadLength, Parallel}, Ops, DataRate} = benchmark(PayloadLength, Samples, Parallel),
+  {{PoolSize, PayloadLength, Samples, Parallel}, Ops, DataRate}.
 
 benchmark(PayloadLength, Samples, Parallel) ->
     Payload1 = << <<"x">> || _ <- lists:seq(1, PayloadLength - 1) >>,
