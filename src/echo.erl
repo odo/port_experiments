@@ -70,7 +70,7 @@ echo(Msg, Server) ->
 
 init(ExtProg) ->
     process_flag(trap_exit, true),
-    Port = open_port({spawn, ExtProg}, [stream, {line, get_maxline()}]),
+    Port = open_port({spawn, ExtProg}, [binary, {packet, 4}, {parallelism, true}]),
     {ok, #state{port = Port}}.
 
 handle_call({echo, Msg}, _From, #state{port = Port} = State) ->
@@ -79,7 +79,9 @@ handle_call({echo, Msg}, _From, #state{port = Port} = State) ->
         {response, Response} ->
             {reply, Response, State};
         timeout ->
-            {stop, port_timeout, State}
+            {stop, port_timeout, State};
+        Else ->
+            {reply, Else, State}
     end.
 
 handle_cast(_Msg, State) ->
@@ -109,16 +111,9 @@ get_maxline() ->
     Value.
 
 collect_response(Port) ->
-  collect_response(Port, []).
-
-collect_response(Port, LineAcc) ->
     receive
-        {Port, {data, {eol, Result}}} ->
-            Line = lists:reverse([Result | LineAcc]),
-            {response, Line};
-        {Port, {data, {noeol, Result}}} ->
-            collect_response(Port, [Result | LineAcc])
-
+        {Port, {data, Data}} ->
+            {response, Data}
     %% Prevent the gen_server from hanging indefinitely in case the
     %% spawned process is taking too long processing the request.
     after get_timeout() ->
